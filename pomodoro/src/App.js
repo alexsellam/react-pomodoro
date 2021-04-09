@@ -9,23 +9,37 @@ function padTime(time) {
 function App() {
   const [title, setTitle] = useState("Que le compte à rebours commence !")
   const [timeLeft, setTimeLeft] = useState(25 * 60)
+  const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef(null);  
 
   function startTimer(){
+    if (intervalRef.current !== null) return;
+
     setTitle("C'est parti !")
+    setIsRunning(true);
     intervalRef.current  = setInterval (() => {
       setTimeLeft(timeLeft => {
         if (timeLeft >= 1) return timeLeft - 1;
-        // reset the timer
+        resetTimer();
         return 0; 
       });
     }, 1000);
   }
 
   function stopTimer(){
-
+    if (intervalRef.current === null) return; 
     clearInterval(intervalRef.current)
+    intervalRef.current = null; 
     setTitle("Ne lache rien ! Continue ! ")
+    setIsRunning(false);
+  }
+
+  function resetTimer(){
+    clearInterval(intervalRef.current)
+    intervalRef.current = null; 
+    setTitle('Prêt pour un nouveau pomodoro ?');
+    setTimeLeft(25 * 60)
+    setIsRunning(false);
   }
 
   const minutes = padTime(Math.floor(timeLeft / 60)); 
@@ -41,9 +55,9 @@ function App() {
       </div>
 
       <div className="buttons">
-        <button onClick={startTimer}>Start</button>
-        <button onClick={stopTimer}>Stop</button>
-        <button>Reset</button>
+        {!isRunning  && <button onClick={startTimer}>Start</button>}
+        {isRunning && <button onClick={stopTimer}>Stop</button>}
+        <button onClick={resetTimer}>Reset</button>
       </div>
     </div>
   );
