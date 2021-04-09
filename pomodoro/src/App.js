@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState  } from 'react';
+import { useState, useRef } from 'react';
 
 function padTime(time) {
   return time.toString().padStart(2, '0');
@@ -9,15 +9,23 @@ function padTime(time) {
 function App() {
   const [title, setTitle] = useState("Que le compte à rebours commence !")
   const [timeLeft, setTimeLeft] = useState(25 * 60)
+  const intervalRef = useRef(null);  
 
   function startTimer(){
-    setInterval (() => {
+    setTitle("C'est parti !")
+    intervalRef.current  = setInterval (() => {
       setTimeLeft(timeLeft => {
         if (timeLeft >= 1) return timeLeft - 1;
         // reset the timer
         return 0; 
       });
     }, 1000);
+  }
+
+  function stopTimer(){
+
+    clearInterval(intervalRef.current)
+    setTitle("Ne lache rien ! Continue ! ")
   }
 
   const minutes = padTime(Math.floor(timeLeft / 60)); 
@@ -34,7 +42,7 @@ function App() {
 
       <div className="buttons">
         <button onClick={startTimer}>Start</button>
-        <button>Stop</button>
+        <button onClick={stopTimer}>Stop</button>
         <button>Reset</button>
       </div>
     </div>
