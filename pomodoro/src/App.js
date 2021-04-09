@@ -10,6 +10,15 @@ function App() {
   const [title, setTitle] = useState("Que le compte à rebours commence !")
   const [timeLeft, setTimeLeft] = useState(25 * 60)
 
+  function startTimer(){
+    setInterval (() => {
+      setTimeLeft(timeLeft => {
+        if (timeLeft >= 1) return timeLeft - 1;
+        // reset the timer
+        return 0; 
+      });
+    }, 1000);
+  }
 
   const minutes = padTime(Math.floor(timeLeft / 60)); 
   const seconds = padTime((timeLeft - minutes * 60));
@@ -24,7 +33,7 @@ function App() {
       </div>
 
       <div className="buttons">
-        <button>Start</button>
+        <button onClick={startTimer}>Start</button>
         <button>Stop</button>
         <button>Reset</button>
       </div>
